@@ -1,7 +1,6 @@
-import React, {FC, useState} from 'react';
-import {NavLink} from 'react-router-dom';
-import styled, {css} from 'styled-components';
-import {Logo} from "./ui/Logo";
+import React, {FC, useRef, useState} from 'react';
+import styled from 'styled-components';
+import {Logo, LogoText} from "./ui/Logo";
 import Card from '../src/static/cart.png'
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
 import {faArrowRight, faCaretUp, faMapMarkerAlt} from "@fortawesome/free-solid-svg-icons";
@@ -14,30 +13,64 @@ import Arrow1 from '../src/static/svg/handleArrow1.svg'
 import One from '../src/static/1.png'
 import Two from '../src/static/2.png'
 import Three from '../src/static/3.png'
+import {Button} from './ui/Buttons';
+import {Modal} from "./ui/Modal";
+import {Form} from './ui/Form';
+import {FooterFlower} from "./static/svg/FooterFlower";
+import {Vk} from "./static/svg/Vk";
+import {Inst} from './static/svg/Inst';
+import {Fb} from './static/svg/Fb';
 
 
 function App() {
   
   const [caret, setCaret] = useState(false)
+  const [modal, setModal] = useState(false)
+  const [modalOrder, setModalOrder] = useState(false)
+  const [modalTitle, setModalTitle] = useState("")
+  const delivery = useRef(null)
+  const catalog = useRef(null)
+  const stock = useRef(null)
+  
+  const handleModalTitle = (text: string) => {
+    setModal(!modal)
+    setModalTitle(text)
+  }
+  
+  const handleModalOrder = () => {
+    setModalOrder(!modalOrder)
+  }
+  const handleScroll = (ref: any) => {
+    ref.current.scrollIntoView({behavior: "smooth"})
+  }
+  
+  
   return (
     <div>
+      {modal && <Modal text={modalTitle} setValue={setModal}/>}
+      {modalOrder && <Modal order setValue={setModalOrder}/>}
       <Header>
         <Logo/>
         <RightContentWrapper>
           <nav>
             <NavList>
-              <NavLink to="#"><NavItem>Доставка</NavItem></NavLink>
-              <NavLink to="#"><NavItem>Каталог</NavItem></NavLink>
-              <NavLink to="#"><NavItem>Акция</NavItem></NavLink>
+              <NavItem onClick={() => handleScroll(delivery)}>Доставка</NavItem>
+              <NavItem onClick={() => handleScroll(catalog)}>Каталог</NavItem>
+              <NavItem onClick={() => handleScroll(stock)}>Акция</NavItem>
             </NavList>
           </nav>
-          <CartWrapper>
+          <CartWrapper onClick={() => {
+            handleModalTitle("Карзина")
+            setCaret(!caret)
+          }
+          }>
             <img src={Card} alt="trash"/>
-            <span onClick={() => setCaret(!caret)}>1700 р. <Caret $caret={caret}
-                                                                  icon={faCaretUp}/>
+            <span>1700 р. <Caret $caret={caret}
+                                 icon={faCaretUp}/>
             </span>
           </CartWrapper>
-          <Menu>
+          <Menu onClick={() => handleModalTitle("Меню")
+          }>
             <Line/>
             <Line/>
             <Line/>
@@ -52,8 +85,8 @@ function App() {
             Наша благотворительная акция - ещё один
             повод поздравить маму!</p>
           <ButtonWrapper>
-            <Button>Заказать букет</Button>
-            <Button secondary>Смотреть каталог</Button>
+            <Button onClick={handleModalOrder}>Заказать букет</Button>
+            <Button secondary onClick={() => handleModalTitle("Смотреть каталог")}>Смотреть каталог</Button>
           </ButtonWrapper>
         </LeftContent>
         <ImgWrapper>
@@ -61,7 +94,7 @@ function App() {
           <ImgBorder/>
         </ImgWrapper>
       </MainSection>
-      <DeliverSection>
+      <DeliverSection ref={delivery}>
         <TitleWrapper><Marker/> <TitleSection>Доставка</TitleSection></TitleWrapper>
         <TownWrapper>
           <Town>Тверь</Town>
@@ -73,11 +106,12 @@ function App() {
           <Town>Кострома</Town>
         </TownWrapper2>
       </DeliverSection>
-      <AssortmentSection>
+      <AssortmentSection ref={catalog}>
         <TitleSection>Ассортимент</TitleSection>
         <span>слайдер</span>
-        <SeeMore>
-          <WrapperText><span>Увидеть больше</span> <ArrowRight/></WrapperText>
+        <SeeMore onClick={() => handleModalTitle("Увидеть больше")}>
+          <WrapperText><span>Увидеть больше</span>
+            <ArrowRight/></WrapperText>
         </SeeMore>
       </AssortmentSection>
       <WorkSection>
@@ -102,7 +136,7 @@ function App() {
           </Item>
         </ItemsWrapper>
         <SingleButtonWrapper>
-          <Button secondary>Заказать букет</Button>
+          <Button secondary onClick={handleModalOrder}>Заказать букет</Button>
         </SingleButtonWrapper>
       </WorkSection>
       <ActionSection>
@@ -127,7 +161,7 @@ function App() {
         </div>
       </ActionSection>
       
-      <TimeSection>
+      <TimeSection ref={stock}>
         <TitleSection>Обратный отсчёт до конца акции</TitleSection>
         <TimeWrapper>
           <TimeBlock>
@@ -149,20 +183,106 @@ function App() {
       <GiveSection>
         <BlueTitle>#ДОБРОДАРОМ</BlueTitle>
         <ImageContainer>
-          <img src={One} alt=""/>
-          <img src={Two} alt=""/>
-          <img src={Three} alt=""/>
+          <Image src={One} alt=""/>
+          <Image src={Two} alt=""/>
+          <Image src={Three} alt=""/>
         </ImageContainer>
       </GiveSection>
-      {/*<footer></footer>*/}
+      <DeliveryNowSection>
+        
+        <FormWrapper>
+          <Form/>
+        </FormWrapper>
+      </DeliveryNowSection>
+      <Footer>
+        <FooterContent1>
+          <LogoWrapper><FooterFlower/> <WhiteLogo>Flowers4U</WhiteLogo></LogoWrapper>
+          
+          <RightContentWrapper>
+            <nav>
+              <NavList>
+                <NavItem onClick={() => handleScroll(delivery)}>Доставка</NavItem>
+                <NavItem onClick={() => handleScroll(catalog)}>Каталог</NavItem>
+                <NavItem onClick={() => handleScroll(stock)}>Акция</NavItem>
+              </NavList>
+            </nav>
+          </RightContentWrapper>
+          <Social>
+            <Vk/>
+            <Inst/>
+            <Fb/>
+          </Social>
+        </FooterContent1>
+      </Footer>
     </div>
   );
 }
 
 export default App;
 
+const LogoWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+`
+
+const Social = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 40px;
+`
+
+const WhiteLogo = styled(LogoText)`
+  color: white;
+`
+
+const FooterContent1 = styled.div`
+  padding: 100px 0;
+  width: 1200px;
+  display: flex;
+  justify-content: space-between;
+
+  li {
+    color: white;
+  }
+`
+
+const Footer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  background: #E24666;
+`
+
+const FormWrapper = styled.div`
+  margin: 141px 0;
+  border-radius: 20px;
+  padding: 10px;
+  padding-left: 100px;
+  border: 1px solid #E24666;`
+
+const DeliveryNowSection = styled.div`
+  max-width: 1170px;
+  margin: 0 auto;
+`
+
+const Image = styled.img`
+  cursor: pointer;
+  transition: transform 0.3s;
+  width: 100%;
+  min-width: 80px;
+
+  &:hover {
+    transform: scale(1.1);
+
+  }
+`
+
 const ImageContainer = styled.div`
   margin-top: 68px;
+  gap: 25px;
   display: flex;
   align-items: start;
   justify-content: space-between;
@@ -619,44 +739,6 @@ const MainSection = styled.section`
   }
 `
 
-const Button = styled.button<{ secondary?: boolean }>(({secondary}) => css`
-  cursor: pointer;
-  border: 0;
-  width: 227px;
-  height: 55px;
-  background: #E24666;
-  color: white;
-  border-radius: 100px;
-  font-family: Raleway, sans-serif;
-  font-style: normal;
-  font-weight: 800;
-  font-size: 20px;
-  line-height: 23px;
-  transition: background-color 0.3s;
-
-  &:hover {
-    background: #FF8FA6;
-  }
-
-  &:active {
-    background: #B83B54;
-  }
-
-  ${secondary && css`
-    border: 1px solid #E24666;
-    background: white;
-    color: #E24666;
-
-    &:hover {
-      background: #FFD9D9;
-    }
-
-    &:active {
-      background: #FFAFAF;
-    }
-  `}
-`)
-
 
 const Caret = styled(FontAwesomeIcon)<{ $caret: boolean }>`
   color: ${({$caret}) => $caret ? "#DC0988" : "#000000"};
@@ -702,6 +784,7 @@ const NavList = styled.ul`
   gap: 82px;
 `
 const NavItem = styled.li`
+  cursor: pointer;
   font-family: 'Montserrat', sans-serif;
   font-weight: 400;
   font-size: 20px;

@@ -8,7 +8,7 @@ export const Logo = memo(() => {
   return (
     <Wrapper>
       <Flower/>
-      <Text>Flowers4U</Text>
+      <LogoText>Flowers4U</LogoText>
     </Wrapper>
   )
 })
@@ -18,7 +18,7 @@ const Wrapper = styled.div`
   align-items: center;
 `
 
-const Text = styled.span`
+export const LogoText = styled.span`
   font-family: 'Montserrat',sans-serif;
   font-size: 22px;
   font-weight: 700;

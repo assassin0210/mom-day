@@ -14,7 +14,8 @@ export const GlobalStyle = createGlobalStyle`
     list-style-type: none;
   }
   body{
-    padding: 15px;
+    //padding: 15px;
+    position: relative;
   }
   
 `
